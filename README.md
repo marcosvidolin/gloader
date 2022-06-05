@@ -4,7 +4,7 @@ A very simple load test tool
 ## Usage
 
 ```shell
-gload -s senarios.yml
+gload -s /path/to/scenarios.yml
 ```
 
 ## Scenario file example
