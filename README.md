@@ -14,6 +14,8 @@ CreateUser:
   url: https://api.gloadsys.com/users
   mehotd: POST
   timeout: 5
+  iterations: 50
+  processes: 3
   headers:
     Content-Type: application/json
   body: |
@@ -26,6 +28,8 @@ GetAllGroups:
   url: https://api.gloadsys.com/groups
   mehotd: GET
   timeout: 5
+  iterations: 200
+  processes: 10
   headers:
     Content-Type: application/json
 ```
