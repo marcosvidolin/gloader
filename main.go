@@ -60,7 +60,7 @@ func execute(ctx context.Context, s *Scenario, resultCh chan<- *ScenarioResult) 
 
 	c := &http.Client{}
 	if s.Timeout != 0 {
-		c.Timeout = s.Timeout * time.Second
+		c.Timeout = s.Timeout
 	}
 	req := NewRequester(c)
 
