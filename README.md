@@ -13,7 +13,7 @@ gload -s /path/to/scenarios.yml
 CreateUser:
   url: https://api.gloadsys.com/users
   mehotd: POST
-  timeout: 5
+  timeout: 5000
   iterations: 50
   processes: 3
   headers:
@@ -27,7 +27,7 @@ CreateUser:
 GetAllGroups:
   url: https://api.gloadsys.com/groups
   mehotd: GET
-  timeout: 5
+  timeout: 5000
   iterations: 200
   processes: 10
   headers:
