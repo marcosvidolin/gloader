@@ -1,10 +1,11 @@
-# gload
+# GLoader
+
 A very simple load test tool
 
 ## Usage
 
 ```shell
-gload -s /path/to/scenarios.yml
+gloader -s /path/to/scenarios.yml
 ```
 
 ## Scenario file example

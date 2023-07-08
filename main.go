@@ -3,15 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
-
-	"gopkg.in/yaml.v2"
 )
 
 func main() {
+	ctx := context.Background()
+
 	// TODO: path from parameter
 	scenarios, err := readYml("./data.yml")
 	if err != nil {
@@ -19,9 +18,7 @@ func main() {
 		return
 	}
 
-	resultCh := make(chan *ScenarioResult)
-	ctx := context.Background()
-
+	resultCh := make(chan *ScenarioResult, len(scenarios))
 	for _, s := range scenarios {
 		execute(ctx, &s, resultCh)
 	}
@@ -30,28 +27,6 @@ func main() {
 	for g := range resultCh {
 		fmt.Println(g)
 	}
-}
-
-func readYml(path string) ([]Scenario, error) {
-	yfile, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	data := make(map[string]Scenario)
-
-	err = yaml.Unmarshal(yfile, &data)
-	if err != nil {
-		return nil, err
-	}
-
-	ss := make([]Scenario, len(data))
-	for k, v := range data {
-		v.ID = k
-		ss = append(ss, v)
-	}
-
-	return ss, nil
 }
 
 func execute(ctx context.Context, s *Scenario, resultCh chan<- *ScenarioResult) {
@@ -77,7 +52,7 @@ func execute(ctx context.Context, s *Scenario, resultCh chan<- *ScenarioResult) 
 			close(ch)
 		}(rCh, sc)
 
-		resp, err := req.doHTTP(context.Background(), &(RequesterReq{
+		resp, err := req.doHTTP(context.Background(), &(Request{
 			Method:  s.Method,
 			URL:     s.URL,
 			Body:    s.Body,
@@ -88,7 +63,7 @@ func execute(ctx context.Context, s *Scenario, resultCh chan<- *ScenarioResult) 
 			sc.Err = err
 			return
 		}
-		sc.Status = string(resp.StatusCode)
+		sc.Status = fmt.Sprintf("%d", resp.StatusCode)
 
 	}(resultCh, sce)
 

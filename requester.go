@@ -7,17 +7,17 @@ import (
 	"strings"
 )
 
-type Requester struct {
+type requester struct {
 	client *http.Client
 }
 
-func NewRequester(c *http.Client) *Requester {
-	return &Requester{
+func NewRequester(c *http.Client) *requester {
+	return &requester{
 		client: c,
 	}
 }
 
-type RequesterReq struct {
+type Request struct {
 	Name    string
 	URL     string
 	Method  string
@@ -25,14 +25,14 @@ type RequesterReq struct {
 	Body    string
 }
 
-type RequesterResp struct {
+type Response struct {
 	Body          string
 	Status        string
 	StatusCode    int
 	ContentLength int64
 }
 
-func (r *Requester) doHTTP(ctx context.Context, rr *RequesterReq) (*RequesterResp, error) {
+func (r *requester) doHTTP(ctx context.Context, rr *Request) (*Response, error) {
 	req, err := http.NewRequest(rr.Method, rr.URL, strings.NewReader(rr.Body))
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func (r *Requester) doHTTP(ctx context.Context, rr *RequesterReq) (*RequesterRes
 		return nil, err
 	}
 
-	return &RequesterResp{
+	return &Response{
 		Body:          string(b),
 		Status:        resp.Status,
 		StatusCode:    resp.StatusCode,
