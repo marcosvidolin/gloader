@@ -3,15 +3,32 @@ package main
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
+
+func readYml(path string) (map[string]Scenario, error) {
+	scenarios := make(map[string]Scenario, 0)
+
+	file, err := ioutil.ReadFile(path)
+	if err != nil {
+		return scenarios, err
+	}
+
+	if err := yaml.Unmarshal(file, scenarios); err != nil {
+		return scenarios, err
+	}
+
+	return scenarios, nil
+}
 
 func main() {
 	ctx := context.Background()
 
-	// TODO: path from parameter
 	scenarios, err := readYml("./data.yml")
 	if err != nil {
 		log.Fatal(err)
@@ -30,12 +47,11 @@ func main() {
 }
 
 func execute(ctx context.Context, s *Scenario, resultCh chan<- *ScenarioResult) {
-
 	// TODO: processes and iterations
 
 	c := &http.Client{}
 	if s.Timeout != 0 {
-		c.Timeout = s.Timeout
+		c.Timeout = s.Timeout * time.Second
 	}
 	req := NewRequester(c)
 
@@ -66,5 +82,4 @@ func execute(ctx context.Context, s *Scenario, resultCh chan<- *ScenarioResult) 
 		sc.Status = fmt.Sprintf("%d", resp.StatusCode)
 
 	}(resultCh, sce)
-
 }
